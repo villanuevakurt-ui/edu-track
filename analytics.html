@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - Analytics</title>
+    <style>
+        :root {
+            --dark-blue: #1e293b;
+            --teal: #4fd1c5;
+            --active-teal: #e6fffa;
+            --light-grey: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --white: #ffffff;
+
+            /* Metric Colors */
+            --score-blue: #3b82f6;
+            --assign-green: #22c55e;
+            --hours-purple: #a855f7;
+            --streak-orange: #f97316;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-grey);
+            display: flex;
+            height: 100vh;
+            color: var(--text-main);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 240px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            padding: 0 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--dark-blue);
+        }
+
+        .logo .et-icon {
+            background: var(--dark-blue);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-sub);
+        }
+
+        .nav-links li {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transition: 0.2s;
+            border-right: 4px solid transparent;
+        }
+
+        .nav-links li.active {
+            background: var(--active-teal);
+            color: var(--teal);
+            border-right-color: var(--teal);
+            border-radius: 0 25px 25px 0;
+            margin-right: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            height: 70px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-bar input {
+            width: 400px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #f1f5f9;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .container {
+            padding: 30px 40px;
+        }
+
+        .header-group {
+            margin-bottom: 25px;
+        }
+
+        .header-group h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header-group p {
+            color: var(--text-sub);
+            font-size: 14px;
+        }
+
+        /* Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .metric-info .label {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+
+        .metric-info .val {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-blue);
+        }
+
+        /* Large Chart Section */
+        .section-card {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .chart-area {
+            height: 250px;
+            border-bottom: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0 20px 10px;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        /* Histogram Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 180px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bar {
+            width: 45px;
+            background: #5a968f;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            width: 100%;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-sub);
+        }
+
+        /* Highlight Items */
+        .highlight-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .hl-green {
+            background: #f0fdf4;
+            border: 1px solid #bcf0da;
+        }
+
+        .hl-blue {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+
+        .hl-purple {
+            background: #faf5ff;
+            border: 1px solid #e9d5ff;
+        }
+
+        .highlight-box h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .highlight-box p {
+            color: var(--text-sub);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><span class="et-icon">ET</span> EduTrack</div>
+        <ul class="nav-links">
+            <a href="index.html">
+                <li>📊 Dashboard</li>
+            </a>
+            <a href="courses.html">
+                <li>📖 My Courses</li>
+            </a>
+            <a href="attendance.html">
+                <li>📅 Attendance</li>
+            </a>
+            <a href="analytics.html">
+                <li class="active">📈 Analytics</li>
+            </a>
+            <a href="insights.html">
+                <li>💡 Learning Insights</li>
+            </a>
+            <a href="reports.html">
+                <li>📄 Reports</li>
+            </a>
+            <a href="settings.html">
+                <li>⚙️ Settings</li>
+            </a>
+        </ul>
+    </aside>
+
+    <div class="main-content">
+        <header>
+            <div class="search-bar"><input type="text" placeholder="Search courses, students, analytics..."></div>
+            <div class="user-profile">
+                <div style="text-align: right; margin-right: 10px;">
+                    <div style="font-weight: 600; font-size: 14px;">Kurt Villanueva</div>
+                    <div style="font-size: 11px; color: var(--text-sub);">Student</div>
+                </div>
+                <img src="../image.img/363400507_603524701955902_4704895358629329894_n.webp"alt="Profile">
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="header-group">
+                <h2>Analytics</h2>
+                <p>Detailed performance metrics and insights</p>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #eff6ff; color: var(--score-blue);">📉</div>
+                    <div class="metric-info">
+                        <div class="label">Avg Score</div>
+                        <div class="val">89.5%</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #f0fdf4; color: var(--assign-green);">📋</div>
+                    <div class="metric-info">
+                        <div class="label">Assignments</div>
+                        <div class="val">35/35</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #faf5ff; color: var(--hours-purple);">🕒</div>
+                    <div class="metric-info">
+                        <div class="label">Study Hours</div>
+                        <div class="val">130h</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #fff7ed; color: var(--streak-orange);">⚡</div>
+                    <div class="metric-info">
+                        <div class="label">Streak</div>
+                        <div class="val">42 days</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h3 class="section-title">Weekly Study Activity</h3>
+                <div class="chart-area">
+                    <svg width="100%" height="100%" viewBox="0 0 1000 200" preserveAspectRatio="none">
+                        <path d="M0,150 Q100,100 200,80 T400,100 T600,60 T800,90 T1000,50" fill="none" stroke="#eab308"
+                            stroke-width="3" />
+                        <circle cx="200" cy="80" r="4" fill="#eab308" />
+                        <circle cx="400" cy="100" r="4" fill="#eab308" />
+                        <circle cx="600" cy="60" r="4" fill="#eab308" />
+                        <circle cx="800" cy="90" r="4" fill="#eab308" />
+                    </svg>
+                </div>
+                <div class="chart-legend">
+                    <span>➖ Study Hours</span> <span>➖ Assignments</span> <span style="color: #eab308;">➖ Quizzes</span>
+                </div>
+            </div>
+
+            <div class="bottom-grid">
+                <div class="section-card">
+                    <h3 class="section-title">Grade Distribution</h3>
+                    <div class="bar-chart">
+                        <div class="bar" style="height: 60%;"><span class="bar-label">A+</span></div>
+                        <div class="bar" style="height: 90%;"><span class="bar-label">A</span></div>
+                        <div class="bar" style="height: 40%;"><span class="bar-label">A-</span></div>
+                        <div class="bar" style="height: 25%;"><span class="bar-label">B+</span></div>
+                        <div class="bar" style="height: 10%;"><span class="bar-label">B</span></div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title">Performance Highlights</h3>
+                    <div class="highlight-box hl-green">
+                        <h4 style="color: #166534;">Top Performer</h4>
+                        <p>Ranked in top 10% of all students this semester</p>
+                    </div>
+                    <div class="highlight-box hl-blue">
+                        <h4 style="color: #1e40af;">Consistent Progress</h4>
+                        <p>Steady improvement across all subjects for 6 weeks</p>
+                    </div>
+                    <div class="highlight-box hl-purple">
+                        <h4 style="color: #6b21a8;">High Engagement</h4>
+                        <p>100% assignment submission rate maintained</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

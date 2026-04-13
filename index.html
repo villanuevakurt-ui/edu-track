@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - Main Dashboard</title>
+    <link rel="stylesheet" href="../administrator/style.css">
+    <style>
+        :root {
+            --dark-blue: #1e293b;
+            --teal: #4fd1c5;
+            --active-teal: #e6fffa;
+            --light-grey: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #334155;
+            --text-sub: #64748b;
+            --white: #ffffff;
+            --bg-card: #ffffff;
+            --ai-bg: #312e81;
+        }
+
+        /* Black Theme / Dark Mode */
+        [data-theme="dark"] {
+            --light-grey: #0f172a;
+            --white: #1e293b;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --border: #334155;
+            --dark-blue: #ffffff;
+            --active-teal: #2d3748;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-grey);
+            display: flex;
+            height: 100vh;
+            color: var(--text-main);
+            transition: 0.3s;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 240px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            padding: 0 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--dark-blue);
+        }
+
+        .logo .et-icon {
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-sub);
+        }
+
+        .nav-links li {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transition: 0.2s;
+            border-right: 4px solid transparent;
+        }
+
+        .nav-links li.active {
+            background: var(--active-teal);
+            color: var(--teal);
+            border-right-color: var(--teal);
+            border-radius: 0 25px 25px 0;
+            margin-right: 10px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            height: 70px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-bar input {
+            width: 400px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--light-grey);
+            color: var(--text-main);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-container {
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .large-card {
+            grid-column: span 3;
+        }
+
+        .medium-card {
+            grid-column: span 2;
+        }
+
+        .card-title {
+            font-size: 12px;
+            color: var(--text-sub);
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .kpi-val {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--dark-blue);
+        }
+
+        /* KPI Progress Circles */
+        .circle-box {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .circular-chart {
+            width: 80px;
+            height: 80px;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 3.8;
+        }
+
+        .circle {
+            fill: none;
+            stroke: var(--teal);
+            stroke-width: 2.8;
+            stroke-linecap: round;
+        }
+
+        .circle-text {
+            font-size: 10px;
+            font-weight: bold;
+            fill: var(--text-main);
+            text-anchor: middle;
+        }
+
+        /* Course Breakdown Styles */
+        .bottom-grid {
+            grid-column: span 5;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .course-list-item {
+            margin-bottom: 15px;
+        }
+
+        .course-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .progress-container {
+            height: 8px;
+            background: var(--light-grey);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* AI Box */
+        .ai-box {
+            background: var(--ai-bg);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .ai-box h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .ai-list {
+            list-style: none;
+            font-size: 13px;
+        }
+
+        .ai-list li {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Notifications */
+        .note-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .note-item:last-child {
+            border-bottom: none;
+        }
+
+        .note-item h4 {
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .note-item p {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        /* Bar Chart Styles */
+        .chart-placeholder {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bar-pill {
+            width: 12px;
+            background: var(--teal);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="et-icon">ET</span> EduTrack
+        </div>
+        <ul class="nav-links">
+            <a href="#">
+                <li class="active">📊 Dashboard</li>
+            </a>
+            <a href="courses.html">
+                <li>📖 My Courses</li>
+            </a>
+            <a href="attendance.html">
+                <li>📅 Attendance</li>
+            </a>
+            <a href="analytics.html">
+                <li>📈 Analytics</li>
+            </a>
+            <a href="insights.html">
+                <li>💡 Learning Insights</li>
+            </a>
+            <a href="reports.html">
+                <li>📄 Reports</li>
+            </a>
+            <a href="settings.html">
+                <li>⚙️ Settings</li>
+            </a>
+        </ul>
+    </aside>
+
+    <div class="main-content">
+        <header>
+            <div class="search-bar">
+                <input type="text" placeholder="Search courses, students, analytics...">
+            </div>
+            <div class="user-profile">
+                <div style="text-align: right;">
+                    <div class="user-name">Kurt Villanueva<img src="" alt="Profile"></div>
+
+                    <span style="font-weight: 400; font-size: 11px; color: var(--text-sub);">Student</span>
+                </div>
+
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+
+            <div class="card">
+                <div class="card-title">Current GPA</div>
+                <div class="kpi-val">3.8 <span style="font-size: 18px; color: var(--text-sub);">/ 4.0</span></div>
+                <div style="font-size: 12px; color: #10b981; font-weight: 600; margin-top: 5px;">↑ +0.2 from last
+                    semester</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Course Completion</div>
+                <div class="circle-box">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                        <path class="circle-bg"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" stroke-dasharray="78, 100"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="circle-text">78%</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Attendance Rate</div>
+                <div class="circle-box">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                        <path class="circle-bg"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" style="stroke: #3b82f6; stroke-dasharray: 96, 100;"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="circle-text">96%</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Upcoming Deadlines</div>
+                <div
+                    style="font-size: 13px; border-left: 3px solid var(--teal); padding-left: 10px; margin-bottom: 10px;">
+                    Problem Set 5<br><small style="color:var(--text-sub)">Math 201 • Apr 12</small>
+                </div>
+                <div style="font-size: 13px; border-left: 3px solid #a855f7; padding-left: 10px;">
+                    Essay Draft<br><small style="color:var(--text-sub)">English 101 • Apr 14</small>
+                </div>
+            </div>
+
+            <div class="card" style="background: linear-gradient(135deg, #1e293b, #334155); color: white;">
+                <div class="card-title" style="color: #94a3b8;">Next Class</div>
+                <div style="font-size: 18px; font-weight: 700; margin: 5px 0;">History 202</div>
+                <p style="font-size: 11px; opacity: 0.8;">📍 Room B-204 | 2:00 PM</p>
+            </div>
+
+            <div class="card large-card">
+                <div class="card-title">Subject Performance Trends</div>
+                <div class="chart-placeholder">
+                    <div class="bar-pill" style="height: 60%;"></div>
+                    <div class="bar-pill" style="height: 80%;"></div>
+                    <div class="bar-pill" style="height: 40%; background: #fbbf24;"></div>
+                    <div class="bar-pill" style="height: 90%;"></div>
+                    <div class="bar-pill" style="height: 70%;"></div>
+                    <div class="bar-pill" style="height: 85%;"></div>
+                </div>
+            </div>
+
+            <div class="card medium-card">
+                <div class="card-title">Competency Profile</div>
+                <div style="display: flex; justify-content: center; align-items: center; height: 180px;">
+                    <svg width="140" height="140" viewBox="0 0 100 100">
+                        <polygon points="50,0 90,20 90,80 50,100 10,80 10,20" fill="none" stroke="var(--border)" />
+                        <polygon points="50,5 75,30 70,80 50,90 30,65 25,40" fill="rgba(79, 209, 197, 0.3)"
+                            stroke="var(--teal)" stroke-width="2" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="bottom-grid">
+                <div class="card">
+                    <h3 style="font-size:16px; margin-bottom:15px;">Course Breakdown</h3>
+                    <div class="course-list-item">
+                        <div class="course-info"><span>Mathematics 201</span> <span>92%</span></div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 92%; background: #3b82f6;"></div>
+                        </div>
+                    </div>
+                    <div class="course-list-item">
+                        <div class="course-info"><span>Science 301</span> <span>90%</span></div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 90%; background: #22c55e;"></div>
+                        </div>
+                    </div>
+                    <div class="course-list-item">
+                        <div class="course-info"><span>History 202</span> <span>85%</span></div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 85%; background: #f97316;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-box">
+                    <h3>✨ AI-Powered Insights</h3>
+                    <ul class="ai-list">
+                        <li>🔹 Math performance shows consistent improvement.</li>
+                        <li>🔹 English writing skills are excellent.</li>
+                        <li>🔹 Focus is best during morning hours.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size:16px; margin-bottom:15px;">🔔 Notifications</h3>
+                    <div class="note-item">
+                        <h4>Ms. Johnson (Math)</h4>
+                        <p>Kurt is excelling in advanced topics.</p>
+                        <p>.</p>
+                        <p>2hrs. ago</p>
+                    </div>
+                    <div class="note-item">
+                        <h4>Parent Portal</h4>
+                        <p>Report card available for review.</p>
+                        <p>.</p>
+                        <p>4hrs. ago</p>
+                    </div>
+                    <div class="note-item">
+                        <h4>Dr. Smith (Science)</h4>
+                        <p>Great work on the presentation.</p>
+                        <p>.</p>
+                        <p>30min. ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+</body>
+
+</html>

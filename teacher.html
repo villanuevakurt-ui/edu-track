@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-bg: #ffffff;
+            --main-bg: #f8fafc;
+            --primary-teal: #63bfa9;
+            --soft-blue: #5d87ff;
+            --text-dark: #334155;
+            --text-light: #94a3b8;
+            --border: #f1f5f9;
+            --white: #ffffff;
+            --next-class-grad: linear-gradient(135deg, #3b5998 0%, #63bfa9 100%);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--main-bg);
+            color: var(--text-dark);
+        }
+
+        nav {
+            width: 240px;
+            background: var(--white);
+            height: 100vh;
+            border-right: 1px solid var(--border);
+            position: fixed;
+            z-index: 100;
+        }
+
+        .logo-box {
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            background: #3b5998;
+            color: white;
+            padding: 5px 8px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 4px 15px;
+            display: flex;
+            align-items: center;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: #f1f5f9;
+        }
+
+        main {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+        }
+
+        header {
+            background: white;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-bar {
+            width: 350px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary-teal);
+            color: white;
+            display: grid;
+            place-items: center;
+            font-weight: bold;
+        }
+
+        .banner {
+            background: #1e293b;
+            color: white;
+            padding: 10px 30px;
+            font-size: 13px;
+        }
+
+        .content-section {
+            padding: 25px 35px;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* --- Cards --- */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        /* --- Dashboard Grid --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) 260px;
+            gap: 20px;
+        }
+
+        .badge-circle {
+            background: #ecfdf5;
+            color: #10b981;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 50px;
+        }
+
+        .next-class-card {
+            background: var(--next-class-grad);
+            color: white;
+        }
+
+        /* --- Progress Ring --- */
+        .progress-ring {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-teal) 78%, #f1f5f9 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px auto;
+        }
+
+        .progress-ring::after {
+            content: attr(data-percent);
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        /* --- Gradebook & Table Styles --- */
+        .gradebook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px 20px;
+            font-size: 13px;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .grade-trend {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        .letter-grade {
+            font-weight: bold;
+            color: #3b5998;
+            text-align: center;
+        }
+
+        /* --- Attendance Icons --- */
+        .status-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .status-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            color: var(--text-light);
+        }
+
+        .status-circle.present.active {
+            background: #ecfdf5;
+            color: var(--success);
+            border-color: var(--success);
+        }
+
+        .status-circle.absent.active {
+            background: #fef2f2;
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .status-circle.late.active {
+            background: #fffbeb;
+            color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        /* --- My Classes --- */
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .class-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            position: relative;
+            border: 1px solid #eee;
+        }
+
+        .period-badge {
+            padding: 4px 12px;
+            border-radius: 8px;
+            color: white;
+            font-size: 11px;
+            margin-bottom: 10px;
+            display: inline-block;
+            background: #3b5998;
+        }
+
+        .gpa-top-right {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            text-align: right;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #3b5998;
+            color: white;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        .btn-teal {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .placeholder-chart {
+            height: 250px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <nav>
+        <div class="logo-box">
+            <div class="logo-icon">ET</div>
+            <div class="logo-text">EduTrack</div>
+        </div>
+        <div class="nav-item active" onclick="showSection('dashboard', this)"><i class="fas fa-th-large"></i> Dashboard
+        </div>
+        <div class="nav-item" onclick="showSection('my-classes', this)"><i class="fas fa-users"></i> My Classes</div>
+        <div class="nav-item" onclick="showSection('attendance', this)"><i class="fas fa-clipboard-list"></i> Attendance
+        </div>
+        <div class="nav-item" onclick="showSection('gradebook', this)"><i class="fas fa-book"></i> Gradebook</div>
+        <div class="nav-item" onclick="showSection('analytics', this)">
+            <i class="fas fa-chart-line"></i> Analytics
+        </div>
+        <div class="nav-item" onclick="showSection('course-content', this)">
+            <i class="fas fa-folder"></i> Course Content
+        </div>
+
+        <div class="nav-item" onclick="showSection('settings', this)">
+            <i class="fas fa-cog"></i> Settings
+        </div>
+
+    </nav>
+
+
+
+    <main>
+
+        <header>
+
+            <input type="text" class="search-bar" placeholder="Search courses, students, analytics...">
+
+            <div class="user-profile">
+
+                <i class="far fa-bell"></i>
+
+                <div style="text-align: right;">
+
+                    <strong>Emily Chen</strong><br>
+
+                    <small style="color: var(--text-light);">Teacher</small>
+
+                </div>
+
+                <div class="avatar">EC</div>
+
+            </div>
+
+        </header>
+
+
+
+        <div class="banner"><i class="fas fa-info-circle"></i> 2 New Grades Submitted</div>
+
+
+
+        <div id="dashboard" class="content-section active">
+            <div class="dashboard-header-flex"
+                style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+                <div>
+                    <h2 style="margin: 0; font-size: 24px;">Welcome back!</h2>
+                    <p style="color: var(--text-light); margin: 5px 0 0;">Here’s what’s happening with your courses
+                        today.</p>
+                </div>
+                <div class="date-display" style="text-align: right; font-size: 14px; color: var(--text-light);">
+                    <i class="far fa-calendar-alt"></i> Monday, April 13, 2026
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <small style="color: var(--text-light); font-weight: 600;">ACADEMIC STANDING</small>
+                        <i class="fas fa-graduation-cap" style="color: var(--primary-teal);"></i>
+                    </div>
+                    <div class="stat-value">3.85</div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="badge-circle"
+                            style="background: #dcfce7; color: #15803d; padding: 2px 10px;">Dean's List</span>
+                        <small style="color: var(--success); font-weight: 600;">+0.2 ↑</small>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <small style="color: var(--text-light); font-weight: 600;">TERM PROGRESS</small>
+                        <i class="fas fa-tasks" style="color: var(--soft-blue);"></i>
+                    </div>
+                    <div class="progress-ring" data-percent="72%"
+                        style="margin: 15px auto; width: 80px; height: 80px; background: conic-gradient(var(--soft-blue) 72%, #f1f5f9 0);">
+                    </div>
+                    <div style="text-align: center;"><small>12 / 18 Units Completed</small></div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <small style="color: var(--text-light); font-weight: 600;">SKILL MASTERY</small>
+                        <i class="fas fa-code" style="color: #6366f1;"></i>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div style="margin-bottom: 8px;">
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+                                <span>Backend Logic</span>
+                                <span>90%</span>
+                            </div>
+                            <div style="height: 6px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 90%; height: 100%; background: var(--primary-teal);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+                                <span>Database Design</span>
+                                <span>65%</span>
+                            </div>
+                            <div style="height: 6px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 65%; height: 100%; background: var(--soft-blue);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card next-class-card" style="box-shadow: 0 10px 15px -3px rgba(99, 191, 169, 0.3);">
+                    <small style="opacity: 0.9;">UPCOMING SESSION</small>
+                    <div style="font-size: 18px; font-weight: 700; margin: 12px 0 5px;">Information Tech 301</div>
+                    <div style="font-size: 13px; opacity: 0.9;"><i class="far fa-clock"></i> 2:00 PM - 3:30 PM</div>
+                    <div
+                        style="margin-top: 15px; font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 6px; display: inline-block;">
+                        Room B-204 • Lab Day
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-container" style="grid-template-columns: 1.5fr 1fr; margin-top: 25px;">
+                <div class="card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <strong>Project Milestones</strong>
+                        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">View
+                            Roadmap</button>
+                    </div>
+
+                    <div class="timeline"
+                        style="position: relative; padding-left: 20px; border-left: 2px solid #f1f5f9;">
+                        <div style="margin-bottom: 20px; position: relative;">
+                            <div
+                                style="position: absolute; left: -27px; top: 0; width: 12px; height: 12px; background: var(--primary-teal); border-radius: 50%; border: 3px solid white;">
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <strong style="font-size: 14px;">Database Normalization Assignment</strong>
+                                <span style="font-size: 12px; color: var(--danger); font-weight: 600;">Due
+                                    Tomorrow</span>
+                            </div>
+                            <p style="font-size: 13px; color: var(--text-light); margin: 5px 0;">Apply 3NF to the
+                                Beneficiary Management System schema.</p>
+                        </div>
+                        <div style="margin-bottom: 20px; position: relative;">
+                            <div
+                                style="position: absolute; left: -27px; top: 0; width: 12px; height: 12px; background: #cbd5e1; border-radius: 50%; border: 3px solid white;">
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <strong style="font-size: 14px;">Python UI Prototype</strong>
+                                <span style="font-size: 12px; color: var(--text-light);">Apr 18</span>
+                            </div>
+                            <p style="font-size: 13px; color: var(--text-light); margin: 5px 0;">Finalize the Tkinter
+                                dashboard layout and event handling.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="card" style="background: #1e293b; color: white;">
+                        <strong style="font-size: 14px; display: block; margin-bottom: 15px;">Quick Actions</strong>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div
+                                style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center; cursor: pointer;">
+                                <i class="fas fa-file-upload" style="display: block; margin-bottom: 5px;"></i>
+                                <small>Submit</small>
+                            </div>
+                            <div
+                                style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center; cursor: pointer;">
+                                <i class="fas fa-envelope" style="display: block; margin-bottom: 5px;"></i>
+                                <small>Message</small>
+                            </div>
+                            <div
+                                style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center; cursor: pointer;">
+                                <i class="fas fa-calendar-plus" style="display: block; margin-bottom: 5px;"></i>
+                                <small>Schedule</small>
+                            </div>
+                            <div
+                                style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center; cursor: pointer;">
+                                <i class="fas fa-book-open" style="display: block; margin-bottom: 5px;"></i>
+                                <small>Library</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <strong>Recent Grades</strong>
+                        <div style="margin-top: 15px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f8fafc;">
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600;">Data Structures Quiz</div>
+                                    <small style="color: var(--text-light);">Yesterday</small>
+                                </div>
+                                <span style="font-weight: 700; color: var(--primary-teal);">94%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600;">Systems Analysis</div>
+                                    <small style="color: var(--text-light);">Oct 10</small>
+                                </div>
+                                <span style="font-weight: 700; color: var(--primary-teal);">88%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div id="my-classes" class="content-section">
+
+            <h1>My Classes</h1>
+
+            <p style="color: var(--text-light);">Manage your course sections for Spring 2026</p>
+
+            <div class="classes-grid">
+
+                <div class="class-card">
+
+                    <span class="period-badge">Period 2</span>
+
+                    <div class="gpa-top-right">
+
+                        <div style="font-size: 20px; font-weight: bold;">3.4</div>
+
+                        <small style="color: var(--text-light);">Avg GPA</small>
+
+                    </div>
+
+                    <div style="font-size: 20px; font-weight: bold;">Advanced Algebra</div>
+
+                    <p style="color: var(--text-light); font-size: 14px;"><i class="far fa-clock"></i> 9:15 AM - 10:15
+
+                        AM</p>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+
+                        <span><i class="fas fa-user-friends"></i> 28 Students</span>
+
+                        <span>Room 203</span>
+
+                    </div>
+
+                    <div class="btn-group" style="margin-top: 20px;">
+
+                        <button class="btn btn-primary">View Roster</button>
+
+                        <button class="btn btn-outline"
+                            onclick="showSection('gradebook', document.querySelectorAll('.nav-item')[3])">Gradebook</button>
+
+                    </div>
+
+                </div>
+
+                <div class="class-card">
+
+                    <span class="period-badge" style="background: #4d908e;">Period 4</span>
+
+                    <div class="gpa-top-right">
+
+                        <div style="font-size: 20px; font-weight: bold;">3.6</div>
+
+                        <small style="color: var(--text-light);">Avg GPA</small>
+
+                    </div>
+
+                    <div style="font-size: 20px; font-weight: bold;">Pre-Calculus</div>
+
+                    <p style="color: var(--text-light); font-size: 14px;"><i class="far fa-clock"></i> 11:30 AM - 12:30
+
+                        PM</p>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+
+                        <span><i class="fas fa-user-friends"></i> 24 Students</span>
+
+                        <span>Room 203</span>
+
+                    </div>
+
+                    <div class="btn-group" style="margin-top: 20px;">
+
+                        <button class="btn btn-primary">View Roster</button>
+
+                        <button class="btn btn-outline">Gradebook</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div id="attendance" class="content-section">
+
+            <div class="attendance-header">
+
+                <div>
+
+                    <h1>Attendance Log</h1>
+
+                    <p style="color: var(--text-light);">Advanced Algebra - Period 2 - April 12, 2026</p>
+
+                </div>
+
+                <div class="btn-group">
+
+                    <button class="btn btn-outline"><i class="far fa-calendar"></i> Change Date</button>
+
+                    <button class="btn btn-teal">Save Attendance</button>
+
+                </div>
+
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Student Name</th>
+
+                            <th>Student ID</th>
+
+                            <th>Status Today</th>
+
+                            <th>Present</th>
+
+                            <th>Absent</th>
+
+                            <th>Late</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>Sarah Martinez</td>
+
+                            <td>SM-2401</td>
+
+                            <td>
+
+                                <div class="status-icons">
+
+                                    <div class="status-circle present active"><i class="fas fa-check"></i></div>
+
+                                    <div class="status-circle absent"><i class="fas fa-times"></i></div>
+
+                                    <div class="status-circle late"><i class="far fa-clock"></i></div>
+
+                                </div>
+
+                            </td>
+
+                            <td>18</td>
+
+                            <td>2</td>
+
+                            <td>1</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>James Chen</td>
+
+                            <td>JC-2402</td>
+
+                            <td>
+
+                                <div class="status-icons">
+
+                                    <div class="status-circle present active"><i class="fas fa-check"></i></div>
+
+                                    <div class="status-circle absent"><i class="fas fa-times"></i></div>
+
+                                    <div class="status-circle late"><i class="far fa-clock"></i></div>
+
+                                </div>
+
+                            </td>
+
+                            <td>17</td>
+
+                            <td>3</td>
+
+                            <td>1</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <div id="gradebook" class="content-section">
+
+            <div class="gradebook-header">
+
+                <div>
+
+                    <h1>Gradebook</h1>
+
+                    <p style="color:var(--text-light); margin:5px 0 0;">Advanced Algebra - Period 2 - Spring 2026</p>
+
+                </div>
+
+                <div class="btn-group">
+
+                    <button class="btn btn-outline"><i class="fas fa-filter"></i> Filter</button>
+
+                    <button class="btn btn-outline"><i class="fas fa-download"></i> Export</button>
+
+                    <button class="btn btn-teal"><i class="fas fa-plus"></i> Add Assignment</button>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Student Name</th>
+
+                            <th>Quiz 1 <br><small>Mar 15</small></th>
+
+                            <th>Quiz 2 <br><small>Mar 29</small></th>
+
+                            <th>Midterm <br><small>Apr 5</small></th>
+
+                            <th>Homework Avg</th>
+
+                            <th>Current Grade</th>
+
+                            <th>Letter</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>Sarah Martinez</td>
+
+                            <td>85</td>
+
+                            <td>78</td>
+
+                            <td>82</td>
+
+                            <td>92</td>
+
+                            <td class="grade-trend trend-down">84.3 <i class="fas fa-arrow-trend-down"></i></td>
+
+                            <td class="letter-grade">B</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>James Chen</td>
+
+                            <td>92</td>
+
+                            <td>88</td>
+
+                            <td>90</td>
+
+                            <td>95</td>
+
+                            <td class="grade-trend trend-up">91.2 <i class="fas fa-arrow-trend-up"></i></td>
+
+                            <td class="letter-grade">A-</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Emily Rodriguez</td>
+
+                            <td>95</td>
+
+                            <td>94</td>
+
+                            <td>96</td>
+
+                            <td>98</td>
+
+                            <td class="grade-trend trend-up">95.8 <i class="fas fa-arrow-trend-up"></i></td>
+
+                            <td class="letter-grade">A</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <div class="summary-grid">
+
+                <div class="card">
+
+                    <small style="color:var(--text-light)">Class Average</small>
+
+                    <div class="stat-value">87.5</div>
+
+                    <small style="color:var(--success)">+2.3 from last period</small>
+
+                </div>
+
+                <div class="card">
+
+                    <small style="color:var(--text-light)">Highest Grade</small>
+
+                    <div class="stat-value" style="color:var(--primary-teal)">95.8</div>
+
+                    <small>Emily Rodriguez</small>
+
+                </div>
+
+                <div class="card">
+
+                    <small style="color:var(--text-light)">Students At Risk</small>
+
+                    <div class="stat-value" style="color:var(--danger)">2</div>
+
+                    <small>Below 75%</small>
+
+                </div>
+
+                <div class="card">
+
+                    <small style="color:var(--text-light)">Pending Grades</small>
+
+                    <div class="stat-value" style="color:#f59e0b;">12</div>
+
+                    <small>Assignments to grade</small>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div id="analytics" class="content-section">
+            <div class="gradebook-header">
+                <div>
+                    <h1>Performance Analytics</h1>
+                    <p style="color:var(--text-light); margin:5px 0 0;">Visualizing student success and engagement
+                        trends.</p>
+                </div>
+                <div class="btn-group">
+                    <select class="btn btn-outline" style="font-family: inherit;">
+                        <option>All Sections</option>
+                        <option>Advanced Algebra</option>
+                        <option>Pre-Calculus</option>
+                    </select>
+                    <button class="btn btn-teal"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="card">
+                    <div style="margin-bottom: 20px;">
+                        <strong>Class Average Trend</strong>
+                        <p style="font-size: 12px; color: var(--text-light);">Average score percentage over the last 6
+                            months</p>
+                    </div>
+                    <canvas id="performanceChart" height="280"></canvas>
+                </div>
+
+                <div class="card">
+                    <div style="margin-bottom: 20px;">
+                        <strong>Grade Distribution</strong>
+                    </div>
+                    <canvas id="distributionChart" height="280"></canvas>
+                </div>
+            </div>
+
+            <div class="summary-grid" style="margin-top: 25px;">
+                <div class="card">
+                    <small style="color:var(--text-light)">Engagement Rate</small>
+                    <div class="stat-value" style="color: var(--soft-blue);">92%</div>
+                    <div style="font-size: 12px; color: var(--success);"><i class="fas fa-caret-up"></i> 4% vs last term
+                    </div>
+                </div>
+                <div class="card">
+                    <small style="color:var(--text-light)">Avg. Completion Time</small>
+                    <div class="stat-value">4.2 <small style="font-size: 14px; font-weight: 400;">days</small></div>
+                    <div style="font-size: 12px; color: var(--text-light);">For homework assignments</div>
+                </div>
+                <div class="card">
+                    <small style="color:var(--text-light)">Learning Gap</small>
+                    <div class="stat-value" style="color: var(--warning);">15%</div>
+                    <div style="font-size: 12px; color: var(--text-light);">Topics requiring review</div>
+                </div>
+                <div class="card" style="background: var(--next-class-grad); color: white;">
+                    <small style="opacity: 0.9;">AI Predicted GPA</small>
+                    <div class="stat-value">3.92</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Based on current trajectory</div>
+                </div>
+            </div>
+        </div>
+        <main class="main-content">
+            <div id="course-content" class="content-section">
+                <div class="gradebook-header">
+                    <div>
+                        <h1>Course Content</h1>
+                        <p>Advanced Algebra - Spring 2026</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-secondary"><i class="fas fa-upload"></i> Upload</button>
+                        <button class="btn-primary"><i class="fas fa-plus"></i> New Material</button>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header"
+                        style="padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                        <div class="unit-info">
+                            <i class="fas fa-folder folder-icon" style="color: #64748b; margin-right: 1rem;"></i>
+                            <div style="display: inline-block; vertical-align: middle;">
+                                <h3 style="font-size: 1.1rem; font-weight: 700;">Unit 1: Linear Functions</h3>
+                                <span class="status-badge completed"
+                                    style="background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem;">Completed</span>
+                            </div>
+                        </div>
+                        <span class="count-text" style="color: #64748b; font-size: 0.875rem;">3 materials</span>
+                    </div>
+
+                    <div class="material-list">
+                        <div class="material-item">
+                            <div class="file-info">
+                                <i class="fas fa-file-alt"></i>
+                                <div>
+                                    <p class="file-name">Linear Functions Study Guide</p>
+                                    <span class="file-size">2.4 MB</span>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" style="padding: 5px 15px;">View</button>
+                        </div>
+                        <div class="material-item">
+                            <div class="file-info">
+                                <i class="fas fa-video"></i>
+                                <div>
+                                    <p class="file-name">Introduction to Linear Equations</p>
+                                    <span class="file-size">45:30</span>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" style="padding: 5px 15px;">View</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-footer-stats">
+                    <div class="stat-box">
+                        <i class="fas fa-copy"></i>
+                        <div class="stat-text">
+                            <span class="stat-number">42</span>
+                            <p style="color: #64748b; font-size: 0.875rem;">Total Materials</p>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fas fa-video"></i>
+                        <div class="stat-text">
+                            <span class="stat-number">18</span>
+                            <p style="color: #64748b; font-size: 0.875rem;">Video Lessons</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings" class="content-section" style="display:none;">
+                <div class="gradebook-header">
+                    <div>
+                        <h1>Settings</h1>
+                        <p>Manage your account and preferences</p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header"
+                        style="padding: 1.5rem 1.5rem 0 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-user" style="color: #64748b;"></i>
+                        <h3 style="font-weight: 700;">Profile Information</h3>
+                    </div>
+
+                    <form class="settings-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" value="Professor Michael Jones">
+                            </div>
+                            <div class="form-group">
+                                <label>Employee ID</label>
+                                <input type="text" value="EMP-2024-1847">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" value="m.jones@school.edu">
+                            </div>
+                            <div class="form-group">
+                                <label>Department</label>
+                                <input type="text" value="Mathematics">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" style="padding: 0.75rem 2rem;">Save Changes</button>
+                    </form>
+                </div>
+
+
+                <button class="btn-logout" onclick="handleLogout()">
+                    <span>Log Out of EduTrack</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+
+        </main>
+        <script>
+            function showSection(sectionId, element) {
+                // 1. Hide all sections by setting display to none
+                const sections = document.querySelectorAll('.content-section');
+                sections.forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                // 2. Show the specific section by ID
+                const activeSection = document.getElementById(sectionId);
+                if (activeSection) {
+                    activeSection.style.display = 'block';
+                }
+
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                if (element) {
+                    element.classList.add('active');
+                }
+            }
+
+            // Optional: Set a default section to show on load
+            window.onload = function () {
+
+            };
+
+            function handleLogout() {
+                // Simple confirmation dialog
+                const confirmLogout = confirm("Are you sure you want to log out of your EduTrack session?");
+
+                if (confirmLogout) {
+                    const btn = document.querySelector('.btn-logout');
+
+                    // Provide immediate visual feedback
+                    btn.innerHTML = "Closing Session...";
+                    btn.style.backgroundColor = "var(--text-sub)";
+                    btn.style.opacity = "0.8";
+                    btn.style.pointerEvents = "none";
+
+                    // Small delay to simulate processing for a smoother UX
+                    setTimeout(() => {
+                        window.location.href = "start.html";
+                    }, 800);
+                }
+            }
+
+        </script>

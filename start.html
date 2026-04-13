@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>EduTrack - Secure Login</title>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --teal: #4fd1c5;
+            --dark-blue: #1e293b;
+        }
+
+        [data-theme="dark"] {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --border: #334155;
+            --dark-blue: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background 0.3s;
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 16px;
+            width: 380px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            background: var(--dark-blue);
+            color: var(--bg-card);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 18px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+        <div class="logo-area">
+            <div class="logo-icon">ET</div>
+            <h2 style="margin-top:15px;">EduTrack Login</h2>
+            <p style="font-size: 14px; color: var(--text-sub); margin-top: 5px;">Access your portal below</p>
+        </div>
+
+        <form id="authForm">
+            <label>Email Address</label>
+            <input type="email" placeholder="kurt@edutrack.edu" required>
+
+            <label>Password</label>
+            <input type="password" placeholder="••••••••" required>
+
+            <label>User Role</label>
+            <select id="userRole">
+                <option value="student">Student</option>
+                <option value="admin">Administrator</option>
+                <option value="teacher">Teacher</option>
+                <option value="parent">Parent</option>
+            </select>
+
+            <button type="submit" class="btn-login">Enter Dashboard</button>
+        </form>
+    </div>
+
+    <script>
+        // 1. APPLY THEME ON LOAD
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        // 2. CONNECT TO SPECIFIC DASHBOARDS
+        document.getElementById('authForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const role = document.getElementById('userRole').value;
+
+            if (role === 'admin') {
+                // Redirects to your Administrator Dashboard file
+                window.location.href = 'administrator.html';
+            } else if (role === 'student') {
+                // Redirects to your Student Dashboard file
+                window.location.href = 'index.html';
+            }else if (role === 'teacher') {
+                // Redirects to your Student Dashboard file
+                window.location.href = 'teacher.html';
+            } else {
+                alert("Redirecting to " + role + " portal...");
+                window.location.href = 'parent.html';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - Learning Insights</title>
+    <style>
+        :root {
+            --dark-blue: #1e293b;
+            --teal: #4fd1c5;
+            --active-teal: #e6fffa;
+            --light-grey: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --white: #ffffff;
+
+            /* Learning Style Colors */
+            --visual: #3b82f6;
+            --kinesthetic: #22c55e;
+            --auditory: #a855f7;
+            --reading: #f97316;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-grey);
+            display: flex;
+            height: 100vh;
+            color: var(--text-main);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 240px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            padding: 0 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--dark-blue);
+        }
+
+        .logo .et-icon {
+            background: var(--dark-blue);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-sub);
+        }
+
+        .nav-links li {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transition: 0.2s;
+            border-right: 4px solid transparent;
+        }
+
+        .nav-links li.active {
+            background: var(--active-teal);
+            color: var(--teal);
+            border-right-color: var(--teal);
+            border-radius: 0 25px 25px 0;
+            margin-right: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            height: 70px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-bar input {
+            width: 400px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #f1f5f9;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .container {
+            padding: 30px 40px;
+        }
+
+        .header-group {
+            margin-bottom: 25px;
+        }
+
+        .header-group h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header-group p {
+            color: var(--text-sub);
+            font-size: 14px;
+        }
+
+        /* Top Grid: Style Profile & Strengths */
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 25px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* Progress Bars */
+        .style-item {
+            margin-bottom: 18px;
+        }
+
+        .style-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .bar-bg {
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* Strength Items */
+        .strength-list {
+            list-style: none;
+        }
+
+        .strength-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border: 1px solid #f1f5f9;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .strength-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .strength-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0fdf4;
+            color: #10b981;
+        }
+
+        .strength-text h4 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .strength-text p {
+            font-size: 11px;
+            color: var(--text-sub);
+        }
+
+        .strength-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: #5a968f;
+        }
+
+        /* Cognitive Banner */
+        .cognitive-banner {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 60px;
+        }
+
+        .cog-item .label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cog-item .val {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .cog-item .sub {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* Recommendation Items */
+        .rec-item {
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            position: relative;
+            transition: 0.2s;
+        }
+
+        .rec-item:hover {
+            border-color: var(--teal);
+        }
+
+        .rec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .rec-header h4 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .rec-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #f1f5f9;
+            color: var(--text-sub);
+        }
+
+        .rec-body {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 10px;
+        }
+
+        .rec-footer {
+            font-size: 12px;
+            color: #5a968f;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><span class="et-icon">ET</span> EduTrack</div>
+        <ul class="nav-links">
+            <a href="index.html">
+                <li>📊 Dashboard</li>
+            </a>
+            <a href="courses.html">
+                <li>📖 My Courses</li>
+            </a>
+            <a href="attendance.html">
+                <li>📅 Attendance</li>
+            </a>
+            <a href="analytics.html">
+                <li>📈 Analytics</li>
+            </a>
+            <a href="insights.html">
+                <li class="active">💡 Learning Insights</li>
+            </a>
+            <a href="reports.html">
+                <li>📄 Reports</li>
+            </a>
+            <a href="settings.html">
+                <li>⚙️ Settings</li>
+            </a>
+        </ul>
+    </aside>
+
+    <div class="main-content">
+        <header>
+            <div class="search-bar"><input type="text" placeholder="Search insights..."></div>
+            <div class="user-profile">
+                <div style="text-align: right; margin-right: 10px;">
+                    <div style="font-weight: 600; font-size: 14px;">Kurt Villanueva</div>
+                    <div style="font-size: 11px; color: var(--text-sub);">Student</div>
+                </div>
+                <img src="../image.img/363400507_603524701955902_4704895358629329894_n.webp" alt="Profile">
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="header-group">
+                <h2>Learning Insights</h2>
+                <p>AI-powered analysis of your learning patterns and recommendations</p>
+            </div>
+
+            <div class="top-grid">
+                <div class="card">
+                    <h3 class="card-title">Learning Style Profile</h3>
+                    <div class="style-item">
+                        <div class="style-label"><span>Visual Learning</span><span>65%</span></div>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width: 65%; background: var(--visual);"></div>
+                        </div>
+                    </div>
+                    <div class="style-item">
+                        <div class="style-label"><span>Kinesthetic Learning</span><span>55%</span></div>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width: 55%; background: var(--kinesthetic);"></div>
+                        </div>
+                    </div>
+                    <div class="style-item">
+                        <div class="style-label"><span>Auditory Learning</span><span>45%</span></div>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width: 45%; background: var(--auditory);"></div>
+                        </div>
+                    </div>
+                    <div class="style-item">
+                        <div class="style-label"><span>Reading/Writing</span><span>70%</span></div>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width: 70%; background: var(--reading);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Key Strengths</h3>
+                    <ul class="strength-list">
+                        <li class="strength-item">
+                            <div class="strength-left">
+                                <div class="strength-icon">🧠</div>
+                                <div class="strength-text">
+                                    <h4>Mathematical Reasoning</h4>
+                                    <p>Proficiency Score</p>
+                                </div>
+                            </div>
+                            <div class="strength-score">92</div>
+                        </li>
+                        <li class="strength-item">
+                            <div class="strength-left">
+                                <div class="strength-icon" style="background:#eff6ff; color:#3b82f6;">💡</div>
+                                <div class="strength-text">
+                                    <h4>Creative Writing</h4>
+                                    <p>Proficiency Score</p>
+                                </div>
+                            </div>
+                            <div class="strength-score">88</div>
+                        </li>
+                        <li class="strength-item">
+                            <div class="strength-left">
+                                <div class="strength-icon" style="background:#e6fffa; color:#4fd1c5;">🎯</div>
+                                <div class="strength-text">
+                                    <h4>Scientific Analysis</h4>
+                                    <p>Proficiency Score</p>
+                                </div>
+                            </div>
+                            <div class="strength-score">90</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cognitive-banner">
+                <div class="cog-item">
+                    <div class="label">Information Retention</div>
+                    <div class="val">85%</div>
+                    <div class="sub">Cognitive Pattern Analysis</div>
+                </div>
+                <div class="cog-item">
+                    <div class="label">Optimal Study Duration</div>
+                    <div class="val">4.2hrs</div>
+                </div>
+                <div class="cog-item">
+                    <div class="label">Peak Performance Time</div>
+                    <div class="val">Morning</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Personalized Recommendations</h3>
+
+                <div class="rec-item">
+                    <div class="rec-header">
+                        <h4>Advanced Mathematics Track</h4><span class="rec-badge"
+                            style="background:#e6fffa; color:#059669;">high</span>
+                    </div>
+                    <p class="rec-body">Your performance in calculus suggests readiness for advanced topics.</p>
+                    <div class="rec-footer">📈 Explore differential equations next semester</div>
+                </div>
+
+                <div class="rec-item">
+                    <div class="rec-header">
+                        <h4>Creative Writing Workshop</h4><span class="rec-badge">medium</span>
+                    </div>
+                    <p class="rec-body">Strong narrative skills demonstrated in English assignments.</p>
+                    <div class="rec-footer">📈 Consider joining the creative writing club</div>
+                </div>
+
+                <div class="rec-item">
+                    <div class="rec-header">
+                        <h4>Study Pattern Optimization</h4><span class="rec-badge"
+                            style="background:#e6fffa; color:#059669;">high</span>
+                    </div>
+                    <p class="rec-body">Peak performance observed during morning study sessions.</p>
+                    <div class="rec-footer">📈 Schedule challenging subjects before noon</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
